@@ -1,30 +1,44 @@
-nCr: slt $t0 $a0 $zero
-     slt $t1 $a1 $zero
-     slt $t2 $a0 $a1
-     or   $t0 $t0 $t1
-     or   $t0 $t0 $t2
-     bne  $t0 $zero err
-     addi $sp, $sp, -8
-     sw $ra 4($sp)
-     sw $a1 0($sp)
-
-     slt $t0 $zero $a1       test if r<0  ?     $t0 would get 0
-     sub $t1 $a0 $a1    n==r is as same as n-r==0
-     nand $t0 $t0 $t1
-     beq $zero $t0 else
-     addi $v0 $zero 1
-     addi $sp, $sp, 8
+nCr:     // i want to make sure no negative integer can come here
+     slt $t0, $a0, $zero     //check if n<0
+     slt $t1, $a1, $zero     //check if r<0
+     slt $t2, $a0, $a1       //check if n<r
+     or   $t0, $t0, $t1
+     or   $t0, $t0, $t2
+     bne  $t0, $zero, err     //so error condition is [(n<0) or (r<0) or (n<r)]
+     addi $sp, $sp, -16     //prepare 4 items from stacks
+                 //else case proof not((r==0)or(n==r))=(r!=0)and(n!=r)
+      bne $a1, $zero, test2      
+neqr: addi $v0, $zero, 1
+     addi $sp, $sp, 16
      jr $ra
 
-
-else:addi $a0 $a0 -1
+test2: beq $a0, $a1, neqr
+else:
+     sw $a1, 8($sp)
+     sw $a0, 4($sp)
+     sw $ra, 0($sp)
+     addi $a0 $a0 -1
      jal nCr
      addi $s0 $v0 $zero
+     lw $ra, 0($sp)
+     lw $a0, 4($sp)
+     lw $a1, 8($sp)
+     sw $s0, 12($sp)
+     sw $a1, 8($sp)
+     sw $a0, 4($sp)
+     sw $ra, 0($sp)
      addi $a1 $a1 -1
+     addi $a0 $a0 -1
      jal nCr
+     lw $ra, 0($sp)
+     lw $a0, 4($sp)
+     lw $a1, 8($sp)
+     lw $s0, 12($sp)
      add $v0 $s0 $v0
-     lw $ra 4($sp) 
-     addi $sp $sp 8
+
+     addi $sp $sp 16
      jr $ra
 
-err: halt
+
+
+err: syscall   // if error condition met
