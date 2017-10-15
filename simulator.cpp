@@ -4,6 +4,7 @@
 #include <cmath>
 using namespace std;
 int word[65536];
+int hi,lo;
 bool b;
 int c=1024;
 int main(int argc, char *argv[])

@@ -1,0 +1,62 @@
+phi:
+addi $sp, $sp, -12          // prepare a stack for 3 items
+addi $s0, $zero, 1          //result=s0=1
+addi $s1, $zero, 2          //i=s1=2
+phiing:                    // begin for loop{
+slt $t0, $s1, $a0           //does i<n ?
+beq $t0, $zero, phiied      //if isn't , finish
+sw $s1, 8($sp)              //save i
+sw $s0, 4($sp)              //save result
+sw $a0, 0($sp)              //save argument 'n'
+add $a1, $a0, $zero
+add $a0, $s1, $zero
+jal gcd                            //call gcd(i,n)
+sw $a0, 0($sp)               //save argument 'n'
+sw $s0, 4($sp)               //save result
+sw $s1, 8($sp)               //save i
+addi $t1, $v0, -1            //check if gcd(i,n)-1 equals to 0
+bne $t1, $zero, dodge        //if not, do not increase result
+addi $s0, $s0, 1             //if is, result++
+dodge:
+addi $s1, $s1, 1             //i++
+j phiing                     }
+phiied: 
+addi $v0, $s0, $zero       //the result is finish
+ADDI $sp, $sp, 12          //pop 3 items from stack
+jr $ra                     //return
+
+
+gcd:
+ADDI $sp, $sp, -12       // prepare 3 items from the stack
+DIV $a0,$a1              // perform division (AKA modulo)
+MFHI $s0                 // get remainder
+BNE $s0, $zero, gcdrcr   // if remainder is not 0, go to recursion
+ADD $v0, $a1, $zero      // if remainder is 0, n is the result
+ADDI $sp, $sp, 12        // pop 3 items from stack
+JR $ra                   // return
+gcdrcr: //recursion part
+SW $a1, 8($sp)           // save argument 'n'
+SW $s0, 4($sp)           // save m%n
+SW $ra, 0($sp)           // save return address
+ADD $a0, $a1, $zero      
+ADD $a1, $s0, $zero
+JAL gcd                   // return gcd(n,m%n);
+LW $ra, 0($sp)           // restore return address
+LW $s0, 4($sp)           // restore m%n
+LW $a1, 8($sp)           // restore argument 'n'
+ADDI $v0, $v0, $zero     // here is the result
+ADDI $sp, $sp, 12        //pop 3 items from stack
+JR $ra                   // return
+
+
+
+
+
+
+
+
+
+
+
+
+
