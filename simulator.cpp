@@ -3,7 +3,7 @@
 #include <string>
 #include <cmath>
 using namespace std;
-int a[65536];
+int word[65536];
 bool b;
 int c=1024;
 int main(int argc, char *argv[])
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	
 	for(int i=0;i<65536;i++)
 	{
-		a[i]=2147483647;
+		word[i]=2147483647;
 		//cout<<i<<endl;
 	}
 	int binarydigitnum=(floor(log(c)/log(2)));
