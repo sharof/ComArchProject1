@@ -10,12 +10,13 @@ using namespace std;
 vector<string> label;
 vector<int> address;
 vector<int> imm;
+int addr;
 char type;
 string arr[5];
 int pc=0;
 void Rcondcheck(){
 		if(!(atoi(arr[2].c_str())>=0&&atoi(arr[2].c_str())<=7&& atoi(arr[3].c_str())>=0&&atoi(arr[3].c_str())<=7&&atoi(arr[4].c_str())>=0&&atoi(arr[4].c_str())<=7))
-  		{
+  		{//reg number check
   		cout<<"Assemble failed, register number can be only between 0-7 at line "<<pc<<endl; 
  		 exit(1);
    		}
@@ -23,23 +24,49 @@ void Rcondcheck(){
 }
 void Jcondcheck(){
 		if(!(atoi(arr[2].c_str())>=0&&atoi(arr[2].c_str())<=7&& atoi(arr[3].c_str())>=0&&atoi(arr[3].c_str())<=7))
-  		{
+  		{//reg numbercheck
   		cout<<"Assemble failed, register number can be only between 0-7 at line "<<pc<<endl; 
  		 exit(1);
    		}
 
 }
-void Icondcheck(){
+int Icondcheck(){
 		if(!(atoi(arr[2].c_str())>=0&&atoi(arr[2].c_str())<=7&& atoi(arr[3].c_str())>=0&&atoi(arr[3].c_str())<=7))
   		{
+		  //reg number check
   		cout<<"Assemble failed, register number can be only between 0-7 at line "<<pc<<endl; 
  		 exit(1);
+		  return 0;
    		}
+   		
+  if (atoi(arr[4].c_str())== 0 && arr[4] != "0") 		
+   		{
+   		 bool found=false;
+			   int j;
+   			for(int i=0;i<label.size();i++)
+   			{
+			   if(arr[4]==label.at(i)){found=true;j=i;break;  }
+   				
+			   }
+   			if(found){return address.at(j);   }
+   			else{		   
+		cout<<"Assemble failed, "<<arr[4]<<" hasn't declared yet!"<<endl;	   
+			   exit(1);return 0;}
+		   }
+   				
+   	else{	
 if(!(atoi(arr[4].c_str())>=-32768&&atoi(arr[4].c_str())<=32767))
 {
 	cout<<"Assemble failed, immediate value must be within 16 bits at line "<<pc<<endl;
 	exit(1);
 }
+return 0;
+}
+
+
+
+
+
 }
 int main(int argc, char *argv[])
 {
@@ -56,18 +83,15 @@ int main(int argc, char *argv[])
         ssin >> arr[i];
         i++;
     }
-   if(arr[1]==".fill")
+   if(arr[1]==".fill"){
  	label.push_back(arr[0]);
  	address.push_back(pc);
  	imm.push_back(atoi(arr[2].c_str()));
- 	
+ }
  	
  	pc++;
  }
  	tmpfile.close();
- 	
- 	
- 	
  	
  	pc=0;
  	//time to start program
@@ -96,28 +120,57 @@ binarycode=0;
   	binarycode+=atoi(arr[4].c_str()); 
   }
    else if( arr[1]=="lw" ){
-   	Icondcheck();
+   	
+   	addr=Icondcheck();
    binarycode+=2<<22;
     binarycode+=atoi(arr[2].c_str())<<19;
   binarycode+=atoi(arr[3].c_str())<<16;
+  
+    if (atoi(arr[4].c_str())== 0 && arr[4] != "0") 		
+   		{
+  binarycode+=addr;
+}
+        else{
   if(atoi(arr[4].c_str())<0){binarycode+=65536 ;}
   binarycode+=atoi(arr[4].c_str()); 
+}
+  
+  
    }
    else if(  arr[1]=="sw" ){
-   Icondcheck();
+   addr=Icondcheck();
    binarycode+=3<<22;
       binarycode+=atoi(arr[2].c_str())<<19;
   binarycode+=atoi(arr[3].c_str())<<16;
+  
+   if (atoi(arr[4].c_str())== 0 && arr[4] != "0") 		
+   		{
+  binarycode+=addr;
+}
+  else{
   if(atoi(arr[4].c_str())<0){binarycode+=65536 ;}
   binarycode+=atoi(arr[4].c_str()); 
+}
+  
+  
   }
    else if(arr[1]=="beq" ){
-   Icondcheck();
+   addr=Icondcheck();
    binarycode+=4<<22;
       binarycode+=atoi(arr[2].c_str())<<19;
   binarycode+=atoi(arr[3].c_str())<<16;
+  
+   if (atoi(arr[4].c_str())== 0 && arr[4] != "0") 		
+   		{
+  binarycode+=addr;
+}
+  else{
   if(atoi(arr[4].c_str())<0){binarycode+=65536 ;}
   binarycode+=atoi(arr[4].c_str()); 
+}
+  
+  
+  
   }
   else if( arr[1]=="jalr" ){
   	Jcondcheck();

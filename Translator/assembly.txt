@@ -1,2 +1,4 @@
------- add 4 6 4
+------ lw 0 4 neg1
+------ add 4 4 6
+pos1 .fill 1
 neg1 .fill -1                  
