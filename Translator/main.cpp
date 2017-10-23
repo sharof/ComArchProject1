@@ -2,11 +2,14 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <vector>
 #include <cmath>
 #include <sstream>
 #include <fstream>
-#include "condition.h"
 using namespace std;
+vector<string> label;
+vector<int> address;
+vector<int> imm;
 char type;
 string arr[5];
 int pc=0;
@@ -41,21 +44,34 @@ if(!(atoi(arr[4].c_str())>=-32768&&atoi(arr[4].c_str())<=32767))
 int main(int argc, char *argv[])
 {
 	int binarycode=0;
-	
-	
-
     ifstream file,tmpfile;
- 	string line,findhalt;	
+ 	string line;	
+ 	
+ 	//serching for .fill things and remember them
+ 		tmpfile.open("assembly.txt");	
+	while(getline(tmpfile,line)){
+ 	 int i = 0;
+    stringstream ssin(line);
+    while (ssin.good() && i < 5){
+        ssin >> arr[i];
+        i++;
+    }
+   if(arr[1]==".fill")
+ 	label.push_back(arr[0]);
+ 	address.push_back(pc);
+ 	imm.push_back(atoi(arr[2].c_str()));
+ 	
+ 	
+ 	pc++;
+ }
+ 	tmpfile.close();
+ 	
+ 	
+ 	
+ 	
+ 	pc=0;
+ 	//time to start program
 	file.open("assembly.txt");	
-
-	
-	
-	
-	
-	
-	
-	
-	
 	while(getline(file,line)){
 binarycode=0;
     int i = 0;
@@ -106,9 +122,17 @@ binarycode=0;
   else if( arr[1]=="jalr" ){
   	Jcondcheck();
   binarycode+=5<<22;}
-  else if( arr[1]=="halt" ){binarycode+=6<<22;}
-     else if( arr[1]=="noop"  ){binarycode+=7<<22;}
   
+  else if( arr[1]=="halt" ){
+  binarycode+=6<<22;
+  }
+     else if( arr[1]=="noop"  ){
+	 binarycode+=7<<22;
+	 }
+  else if( arr[1]==".fill"  ){
+  	binarycode+=atoi(arr[2].c_str());
+  	
+  }
   else{
   cout<<"Assemble failed, unknown instruction at line "<<pc<<endl;
   exit(1);}
