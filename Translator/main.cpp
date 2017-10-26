@@ -3,7 +3,6 @@
 #include <string>
 #include <cstdlib>
 #include <vector>
-#include <cmath>
 #include <sstream>
 #include <fstream>
 using namespace std;
@@ -15,7 +14,15 @@ char type;
  bool found;
 string arr[5];
 string frr[5];
+string towrite;
 int pc=0;
+template <typename T>// this is required for numbertostring
+string NumberToString(T pNumber)// in order to write down the output into a file
+{
+ ostringstream oOStrStream;
+ oOStrStream << pNumber;
+ return oOStrStream.str();
+}
 void Rcondcheck(){
 		if(!(atoi(arr[2].c_str())>=0&&atoi(arr[2].c_str())<=7&& atoi(arr[3].c_str())>=0&&atoi(arr[3].c_str())<=7&&atoi(arr[4].c_str())>=0&&atoi(arr[4].c_str())<=7))
   		{//reg number check
@@ -73,10 +80,11 @@ return 0;
 
 
 }
-int main(int argc, char *argv[])
+int main(int argc, char *argv[])//the MAIN part
 {
 	int binarycode=0;
     ifstream file,tmpfile;
+    ofstream machinecode;
  	string line,fakeline;	
  	
  	//serching for .fill things and remember them
@@ -169,6 +177,10 @@ binarycode=0;
   binarycode+=addr;
 }
         else{
+        	if(atoi(arr[4].c_str())==0 && atoi(arr[2].c_str())==0){
+        		cout<<"Assemble failed, register 0 CANNOT be modified!!! "<<arr[2]<<endl;
+	exit(1);
+			}
   if(atoi(arr[4].c_str())<0){binarycode+=65536 ;}
   binarycode+=atoi(arr[4].c_str()); 
 }
@@ -221,13 +233,19 @@ binarycode=0;
 }
   
   
-  
   }
   else if( arr[1]=="jalr" ){
   Jcondcheck();
   binarycode+=5<<22;
+  if(arr[2]!=arr[3]){
   binarycode+=atoi(arr[2].c_str())<<19;
-  binarycode+=atoi(arr[3].c_str())<<16;
+  binarycode+=(atoi(arr[3].c_str())<<16)+4;
+}
+else{
+	
+	
+	
+}
   }
   
   else if( arr[1]=="halt" ){
@@ -256,10 +274,14 @@ binarycode=0;
   cout<<"Assemble failed, unknown instruction at line "<<pc<<endl;
   exit(1);}
 cout<<binarycode<<endl;
-pc++;
+towrite+=NumberToString(binarycode);//write down each machine code
+towrite+="\n";//end of the line
+pc++;//next instruction
 }
-
 		file.close();
+		machinecode.open("machinecode.txt");//finally, time to write the machine code.
+		machinecode<<towrite;
+		machinecode.close();
 cout<<"Assemble successful!"<<endl;
 return 0;	
 }
