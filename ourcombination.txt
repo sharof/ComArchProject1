@@ -1,0 +1,124 @@
+------ noop @@@@@@@@@@@@@@@@ prepare to call nCr
+------ sw 0 6 5
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5
+------ add 5 6 5
+------ sw 0 2 5
+------ add 5 6 5
+------ lw 0 4 nCrAdr
+------ jalr 4 7
+------ noop @@@@@@@@@@@@@@@@ nCr(n,r)
+nCr	sw 0 2 6    ///////// i want to make sure no negative integer can come here
+------  lw 0 2 0    //////// prepare for slt(n,$0)
+------ sw 0 6 5     ///save $6
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5  ///save n
+------ add 5 6 5
+------ sw 0 2 5   ///save r
+------ add 5 6 5
+------ lw 0 4 sltAdr
+------ jalr 4 7      ////test if n<0
+------ sw 0 3 5 ###########################save result from slt(n,$0) 
+------ lw 0 6 neg1 //$6=-1
+------ add 5 6 5 // decrease stack pointer by 1
+------ sw 0 6 4  ////put r to $4 for a while
+------ sw 0 1 6   ////put n to $6
+------ sw 0 4 1   //put r in $4 to $1
+------ sw 0 6 5
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5
+------ add 5 6 5
+------ sw 0 2 5
+------ add 5 6 5
+------ lw 0 4 sltAdr
+------ jalr 4 7      ////test if r<0
+------ lw 0 6 pos1
+------ add 5 6 5 // increase stack pointer by 1
+------ lw 0 4 5 ###########################restore result from slt(n,$0)
+------ sw 0 6 5
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5 // save n
+------ add 5 6 5
+------ sw 0 2 5 // save r
+------ add 5 6 5
+------ lw 0 1 4   //  "slt(n,$0)" OR slt(r,$0)
+------ lw 0 2 3   //  slt(n,$0) OR "slt(r,$0)"
+------ sw 0 6 5
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5
+------ add 5 6 5
+------ sw 0 2 5
+------ add 5 6 5
+------ lw 0 4 orAdr
+------ jalr 4 7 
+------ lw 0 6 pos1
+------ add 5 6 5
+------ lw 0 2 5 
+------ add 5 6 5
+------ lw 0 1 5 
+------ add 5 6 5
+------ lw 0 6 5
+------ lw 0 2 1 //put r back to $2
+------ lw 0 1 6 //put n back to $1
+------ sw 0 3 6 ////save result of slt(n,$0) OR slt(r,$0) on $6
+------ sw 0 6 5 ////save result of slt(n,$0) OR slt(r,$0) on stack
+------ lw 0 6 neg1///prepare for slt(n,r)
+------ add 5 6 5
+------ sw 0 1 5    /save n
+------ add 5 6 5
+------ sw 0 2 5     /save r
+------ add 5 6 5
+------ lw 0 4 sltAdr ////test if n<r
+------ jalr 4 7
+------ sw 0 6 5 ////save result of slt(n,$0) OR slt(r,$0) on $5
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5 /////save n
+------ add 5 6 5
+------ sw 0 2 5 /////save r
+------ add 5 6 5
+------ lw 0 1 4
+------ lw 0 2 3
+------ lw 0 4 orAdr
+------ jalr 4 7
+------ sw 0 6 4 ////save result of slt(n,$0) OR slt(r,$0) on $4
+------ sw 0 6 5
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5
+------ add 5 6 5
+------ sw 0 2 5
+------ add 5 6 5
+------ lw 0 1 4       "[slt(n,$0) OR slt(r,$0)]" OR slt(n,r)
+------ lw 0 2 3         [slt(n,$0) OR slt(r,$0)] OR "slt(n,r)"
+------ sw 0 6 5
+------ lw 0 6 neg1
+------ add 5 6 5
+------ sw 0 1 5              
+------ add 5 6 5
+------ sw 0 2 5
+------ add 5 6 5
+------ lw 0 4 orAdr   Now,time for   [slt(n,$0) OR slt(r,$0)] OR slt(n,r)
+------ jalr 4 7
+------ lw 0 6 pos1
+------ beq 3 6 nCrErr           [(n<0) or (r<0) or (n<r)]=1 then, error occurs.
+------ lw 0 6 pos1
+------ add 5 6 5
+------ lw 0 2 5
+------ add 5 6 5
+------ lw 0 1 5
+------ add 5 6 5
+------ lw 0 6 5
+tobecontinued
+
+
+
+
+
+
+nCrErr halt

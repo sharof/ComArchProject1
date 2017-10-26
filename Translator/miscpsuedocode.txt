@@ -1,0 +1,19 @@
+slt(a,b)
+	if a-b isNeg
+		return 1
+	else
+	   return 0
+blt(a,b,address)    //branch on less than
+      sw 0 6 5
+      lw 0 6 neg1
+      add 5 6 5
+      sw 0 1 5
+      add 5 6 5
+      sw 0 2 5
+      add 5 6 5
+      slt a b
+      lw 0 6 pos1 
+      beq 3 6 address
+bge(a,b,address)    //branch on less than
+      slt a b
+      beq 3 0 address
