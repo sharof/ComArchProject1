@@ -177,10 +177,7 @@ binarycode=0;
   binarycode+=addr;
 }
         else{
-        	if(atoi(arr[4].c_str())==0 && atoi(arr[2].c_str())==0){
-        		cout<<"Assemble failed, register 0 CANNOT be modified!!! "<<arr[2]<<endl;
-	exit(1);
-			}
+
   if(atoi(arr[4].c_str())<0){binarycode+=65536 ;}
   binarycode+=atoi(arr[4].c_str()); 
 }
@@ -198,6 +195,10 @@ binarycode=0;
   binarycode+=addr;
 }
   else{
+  	        	if(atoi(arr[4].c_str())==0 && atoi(arr[2].c_str())==0){
+        		cout<<"Assemble failed, register 0 CANNOT be modified!!! "<<arr[2]<<endl;
+	exit(1);
+			}
   if(atoi(arr[4].c_str())<0){binarycode+=65536 ;}
   binarycode+=atoi(arr[4].c_str()); 
 }
@@ -237,15 +238,8 @@ binarycode=0;
   else if( arr[1]=="jalr" ){
   Jcondcheck();
   binarycode+=5<<22;
-  if(arr[2]!=arr[3]){
   binarycode+=atoi(arr[2].c_str())<<19;
   binarycode+=(atoi(arr[3].c_str())<<16)+4;
-}
-else{
-	
-	
-	
-}
   }
   
   else if( arr[1]=="halt" ){
