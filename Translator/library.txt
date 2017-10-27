@@ -1,158 +1,100 @@
 ------ lw 0 5 immmax ///////intialize the stack pointer
------- noop @@@@@@@@@@@@@prepare to call sub ////
------- sw 0 6 5
------- lw 0 6 neg1
+sub    sw 5 6 0           @@@@@@@@@@@@@sub(a,b)
+------ lw 0 6 neg3
 ------ add 5 6 5
------- sw 0 1 5
------- add 5 6 5
------- sw 0 2 5
------- add 5 6 5
------- lw 0 4 subAdr
------- jalr 4 7
------- noop @@@@@@@@@@@@@sub(a,b)
-sub	nand	2 2 2
+------ sw 5 2 2
+------ sw 5 1 1
+------	nand	2 2 2   @@@@@@@@@@@@@procedure
 ------  add     2 pos1 2
-------  add     1 2 3
------- noop @@@@@@@@@@@@@end of sub(a,b), restore original variables
------- lw 0 6 pos1
+------  add     1 2 3 
+------ lw 5 1 1   @@@@@@@@@@@@@end of sub(a,b), restore original variables
+------ lw 5 2 2
+------ lw 0 6 pos3
 ------ add 5 6 5
------- lw 0 2 5
+------ lw 5 6 0
+------ jalr 7 4     @@@@@@@@@@@@@return from sub(a,b) ////
+or    sw 5 6 0       @@@@@@@@@@@@@ or(a,b)
+------ lw 0 6 neg3
 ------ add 5 6 5
------- lw 0 1 5
------- add 5 6 5
------- lw 0 6 5
------- jalr 7 4
------- noop @@@@@@@@@@@@@return from sub(a,b) ////
------- noop @@@@@@@@@@@@@prepare to call bitwise or ////
------- sw 0 6 5
------- lw 0 6 neg1
------- add 5 6 5
------- sw 0 1 5
------- add 5 6 5
------- sw 0 2 5
------- add 5 6 5
------- lw 0 4 orAdr
------- jalr 4 7
------- noop @@@@@@@@@@@@@or(a,b)
-or nand	1 1 1
+------ sw 5 2 2
+------ sw 5 1 1 
+------ nand 1 1 1 @@@@@@@@@@@@@ procedure
 ------ nand 2 2 2
------- nand 1 2 3
------- noop @@@@@@@@@@@@@end of or(a,b), restore original variables
------- lw 0 6 pos1
+------ nand 1 2 3 
+------ lw 5 1 1    @@@@@@@@@@@@@ end of or(a,b), restore original variables
+------ lw 5 2 2
+------ lw 0 6 pos3
 ------ add 5 6 5
------- lw 0 2 5
+------ lw 5 6 0
+------ jalr 7 4    @@@@@@@@@@@@@return from or(a,b) ////
+and    sw 5 6 0  @@@@@@@@@@@@@ and(a,b) ////
+------ lw 0 6 neg3
 ------ add 5 6 5
------- lw 0 1 5
------- add 5 6 5
------- lw 0 6 5
------- jalr 7 4
------- noop @@@@@@@@@@@@@return from or(a,b) ////
------- noop @@@@@@@@@@@@@prepare to call bitwise and ////
------- sw 0 6 5
------- lw 0 6 neg1
------- add 5 6 5
------- sw 0 1 5
------- add 5 6 5
------- sw 0 2 5
------- add 5 6 5
------- lw 0 4 andAdr
------- jalr 4 7
------- noop @@@@@@@@@@@@@and(a,b)
-and nand 1 2 6
+------ sw 5 2 2
+------ sw 5 1 1
+------ nand 1 2 6 @@@@@@@@@@@@@ procedure
 ------ nand 6 6 3
------- noop @@@@@@@@@@@@@end of and(a,b), restore original variables
------- lw 0 6 pos1
+------ lw 5 1 1    @@@@@@@@@@@@@end of and(a,b), restore original variables
+------ lw 5 2 2
+------ lw 0 6 pos3
 ------ add 5 6 5
------- lw 0 2 5
+------ lw 5 6 0
+------ jalr 7 4 @@@@@@@@@@@@@return from and(a,b) ////
+slt    sw 5 6 0       @@@@@@@@@@@@@ slt(a,b)
+------ lw 0 6 neg3
 ------ add 5 6 5
------- lw 0 1 5
------- add 5 6 5
------- lw 0 6 5
------- jalr 7 4
------- noop @@@@@@@@@@@@@return from and(a,b) ////
------- noop @@@@@@@@@@@@@prepare to call slt(a,b)
------- sw 0 6 5
------- lw 0 6 neg1
------- add 5 6 5
------- sw 0 1 5
------- add 5 6 5
------- sw 0 2 5
------- add 5 6 5
------- lw 0 4 sltAdr
------- jalr 4 7
------- noop @@@@@@@@@@@@@slt(a,b)
-slt    sw 0 6 5 ///prepare to sub(a,b)
------- lw 0 6 neg1
------- add 5 6 5
------- sw 0 1 5
------- add 5 6 5
------- sw 0 2 5
------- add 5 6 5
------- lw 0 4 subAdr
------- jalr 4 7 ///call sub(a,b)
------- lw 0 1 3 ///put that result into $1 to isNeg it
+------ sw 5 2 2
+------ sw 5 1 1 
+------ lw 0 4 subAdr     @@@@@@@@@@@@@ procedure
+------ jalr 4 7      @@@@@@@@@ call sub(a,b) first
+------ lw 0 1 3 ///put that result into $1 for isNeg(a-b)
 ------ lw 0 4 isNegA
 ------ jalr 4 7  ///call isNeg(a-b)
 ------ add 0 3 3 ///1 if a<b, 0 if isn't
------- noop @@@@@@@@@@@@@end of slt(a,b), restore original variables
------- lw 0 6 pos1
+------ lw 5 1 1    @@@@@@@@@@@@@end of slt(a,b), restore original variables
+------ lw 5 2 2
+------ lw 0 6 pos3
 ------ add 5 6 5
------- lw 0 2 5
+------ lw 5 6 0
+------ jalr 7 4 @@@@@@@@@@@@@return from slt(a,b) ////
+isNeg    sw 5 6 0         @@@@@@@@@@@@@isNeg(a)   
+------ lw 0 6 neg2
 ------ add 5 6 5
------- lw 0 1 5
------- add 5 6 5
------- lw 0 6 5
------- jalr 7 4
------- noop @@@@@@@@@@@@@return from slt(a,b) ////
------- noop @@@@@@@@@@@@@prepare to call isNeg(a) ////
------- sw 0 6 5
------- lw 0 6 neg1
------- add 5 6 5
------- sw 0 1 5
------- add 5 6 5
------- lw 0 4 isNegA
------- jalr 4 7
------- noop @@@@@@@@@@@@@isNeg(a)
-isNeg lw 0 2 immmin     ///// $1 AND with -32768
------- sw 0 6 5
------- lw 0 6 neg1
------- add 5 6 5
------- sw 0 1 5
------- add 5 6 5
------- sw 0 2 5
------- add 5 6 5
+------ sw 5 1 1
+------ lw 0 2 immmin     @@@@@@@@@@@@@@@@procedure
 ------ lw 0 4 andAdr
 ------ jalr 4 7          ///// $1 AND with -32768
------- lw 0 1 3
------- lw 0 6 immmin @@@@@@@if is less than zero,negative sign bit must be 1
------- beq 1 6 2
+------ lw 0 6 3 
+------ beq 2 6 2 @@@@@@@if is less than zero,negative sign bit must be 1
 ------ lw 0 3 0 @@@@@@@ return 0 is this is false
------- beq 0 0 2
+------ beq 1 1 1
 ------ lw 0 3 pos1 @@@@@@@ return 1 is this is true
------- noop @@@@@@@@@@@@@end of isNeg(a), restore original variables
------- lw 0 6 pos1
+------ lw 5 1 1 @@@@@@@@@@@@@end of isNeg(a), restore original variables
+------ lw 0 6 pos2
 ------ add 5 6 5
------- lw 0 1 5
------- add 5 6 5
------- lw 0 6 5
------- jalr 7 4
------- noop @@@@@@@@@@@@@return from isNeg(a) ////
------- noop
------- noop
------- noop
------- noop
------- noop
------- noop
+------ lw 5 6 0
+------ jalr 7 4 @@@@@@@@@@@@@return from isNeg(a) ////
+------ noop @@@@@@@@@@@@@@@@some constants
 pos1 .fill 1
 pos2 .fill 2
 pos3 .fill 3
 pos4 .fill 4
 pos5 .fill 5
+pos6 .fill 6
+pos7 .fill 7
+pos8 .fill 8
+pos9 .fill 9
+pos10 .fill 10
 neg1 .fill -1
 neg2 .fill -2
 neg3 .fill -3
 neg4 .fill -4
 neg5 .fill -5
+neg6 .fill -6
+neg7 .fill -7
+neg8 .fill -8
+neg9 .fill -9
+neg10 .fill -10
 subAdr .fill sub
 orAdr .fill or
 andAdr .fill and

@@ -1,0 +1,15 @@
+------ noop @@@@@@@@@@@@@how to prepare to call sub ////
+------ lw 0 1 X
+------ lw 0 2 Y
+------ lw 0 4 subAdr
+------ jalr 4 7
+------ noop @@@@@@@@@@@@@how to prepare to call bitwise or ////
+------ lw 0 1 X
+------ lw 0 2 Y
+------ lw 0 4 orAdr
+------ jalr 4 7
+------ noop @@@@@@@@@@@@@how prepare to call bitwise and ////
+------ lw 0 1 X
+------ lw 0 2 Y
+------ lw 0 4 andAdr
+------ jalr 4 7
