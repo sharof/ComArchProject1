@@ -5,14 +5,27 @@ sub    sw 5 6 0           @@@@@@@@@@@@@sub(a,b)
 ------ sw 5 2 2
 ------ sw 5 1 1
 ------	nand	2 2 2   @@@@@@@@@@@@@procedure
-------  add     2 pos1 2
-------  add     1 2 3 
+------ lw 0 6 pos1
+------ add 2 6 2
+------ add 1 2 3 
 ------ lw 5 1 1   @@@@@@@@@@@@@end of sub(a,b), restore original variables
 ------ lw 5 2 2
 ------ lw 0 6 pos3
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4     @@@@@@@@@@@@@return from sub(a,b) ////
+neg    sw 5 6 0           @@@@@@@@@@@@@neg(a) AKA a times -1
+------ lw 0 6 neg2
+------ add 5 6 5
+------ sw 5 1 1
+------ nand 1 1 1   @@@@@@@@@@@@@procedure
+------ lw 0 6 pos1
+------ add 1 6 3
+------ lw 5 1 1    @@@@@@@@@@@@@end of neg(a), restore original variables
+------ lw 0 6 pos2
+------ add 5 6 5
+------ lw 5 6 0
+------ jalr 7 4 @@@@@@@@@@@@@return from neg(a,b) ////
 slt  sw 5 6 0           @@@@@@@@@@@@@slt(a,b)
 ------ lw 0 6 neg3
 ------ add 5 6 5
@@ -20,15 +33,37 @@ slt  sw 5 6 0           @@@@@@@@@@@@@slt(a,b)
 ------ sw 5 1 1   
 ------ lw 0 4 subAdr   @@@@@@@@@@@@@procedure
 ------ jalr 4 7
------- lw 0 1 3
------- lw 0 4 isNegA                   @@@@@@ return isNeg(a-b)
+------ add 0 3 1
+------ lw 0 4 isNegA                   
 ------ jalr 4 7
+------ add 0 3 3       @@@@@@ return isNeg(a-b)
 ------ lw 5 1 1    @@@@@@@@@@@@@end of slt(a,b), restore original variables
 ------ lw 5 2 2
 ------ lw 0 6 pos3
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from slt(a,b) ////
+sge  sw 5 6 0           @@@@@@@@@@@@@sge(a,b) test if a>=b
+------ lw 0 6 neg3
+------ add 5 6 5
+------ sw 5 2 2
+------ sw 5 1 1   
+------ lw 0 4 subAdr   @@@@@@@@@@@@@procedure
+------ jalr 4 7
+------ add 0 3 1
+------ lw 0 4 isNegA                   call isNeg(a-b)
+------ jalr 4 7
+------ beq 3 0 2   if a-b is not negative, this mean a>=b,so return 1 (skip 2 instructions)
+------ add 0 0 3       if a-b is negative, return 0       
+------ beq 0 0 2      skip 2 instructions to end the function
+------ lw 0 6 pos1
+------ add 0 6 3
+------ lw 5 1 1    @@@@@@@@@@@@@end of sge(a,b), restore original variables
+------ lw 5 2 2
+------ lw 0 6 pos3
+------ add 5 6 5
+------ lw 5 6 0
+------ jalr 7 4 @@@@@@@@@@@@@return from sge(a,b) ////
 mult sw 5 6 0         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mult(a,b)   
 ------ lw 0 6 neg4        @@@@@@ prepare 4 items
 ------ add 5 6 5
@@ -39,6 +74,8 @@ mult sw 5 6 0         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mult(a,b)
 ------ beq 2 0 get0       /// check if b==0
 ------ lw 0 6 pos1
 ------ beq 1 6 getb         /// check if a==1
+------ lw 0 6 pos2
+------ beq 1 6 bplusb         /// check if a==2
 ------ lw 0 4 sltAdr         @@@@@@@check if a is less than b
 ------ jalr 4 7        
 ------ lw 0 6 pos1
@@ -47,7 +84,7 @@ mult sw 5 6 0         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mult(a,b)
 ------ jalr 4 7
 ------ beq 0 3 mulrcr        @@@@@@@if a == b ,go to recursion part
 ------ beq 0 0 btimea     @@@@@@@   this means if a>b, swap a and b.
-get0 lw 0 3 0               @@@@@@ if a==0 or b==0, return 0
+get0 add 0 0 3               @@@@@@ if a==0 or b==0, return 0
 ------ lw 5 1 1                 @@@@@@ popping 4 items from stacks
 ------ lw 5 2 2
 ------ lw 5 7 3
@@ -55,28 +92,36 @@ get0 lw 0 3 0               @@@@@@ if a==0 or b==0, return 0
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4                         @@@@return
-getb lw 0 3 2                @@@@@@ if a==1, return b
+getb add 0 2 3               @@@@@@ if a==1, return b
 ------ lw 5 1 1                  @@@@@@ popping 4 items from stacks
 ------ lw 5 2 2
 ------ lw 5 7 3
 ------ lw 0 6 pos4
 ------ add 5 6 5
 ------ lw 5 6 0
------- jalr 7 4                                @@@@return
+------ jalr 7 4
+bplusb add 2 2 3                @@@@@@ if a==2, return b+b
+------ lw 5 1 1                  @@@@@@ popping 4 items from stacks
+------ lw 5 2 2
+------ lw 5 7 3
+------ lw 0 6 pos4
+------ add 5 6 5
+------ lw 5 6 0
+------ jalr 7 4           @@@@return
 btimea lw 5 1 1  @@@@@@ to optimize the multiplication a should be less than b
 ------ lw 5 2 2             @@@@@@ popping 4 items from stacks
 ------ lw 5 7 3
 ------ lw 0 6 pos4
 ------ add 5 6 5
 ------ lw 5 6 0
------- sw 0 1 4      //move a to $4
------- lw 0 1 2       //write b in to $1
------- lw 0 2 4           // move a from $4 to $2
+------ add 0 1 4      //move a to $4
+------ add 0 2 1       //write b in to $1
+------ add 0 4 2          // move a from $4 to $2
 ------ lw 0 4 mulAdr 
 ------ jalr 4 7               //call the function again
 ------ jalr 7 4                  @@@@return
 mulrcr lw 0 6 neg1       
------- lw 1 6 1            @@@@@decrease a by 1
+------ add 1 6 1            @@@@@decrease a by 1
 ------ lw 0 4 mulAdr       @@@@@@ recursive part
 ------ jalr 4 7
 ------ lw 5 1 1           @@@@restore original a,b,$6,and return address
@@ -115,19 +160,21 @@ and    sw 5 6 0  @@@@@@@@@@@@@ and(a,b) ////
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from and(a,b) ////
 isNeg    sw 5 6 0         @@@@@@@@@@@@@isNeg(a)   
------- lw 0 6 neg2
+------ lw 0 6 neg3
 ------ add 5 6 5
+------ sw 5 2 2
 ------ sw 5 1 1
 ------ lw 0 2 immmin     @@@@@@@@@@@@@@@@procedure
 ------ lw 0 4 andAdr
 ------ jalr 4 7          ///// $1 AND with -32768
------- lw 0 6 3 
+------ add 0 3 6 
 ------ beq 2 6 2 @@@@@@@if is less than zero,negative sign bit must be 1
------- lw 0 3 0 @@@@@@@ return 0 is this is false
+------ add 0 0 3 @@@@@@@ return 0 is this is false
 ------ beq 1 1 1
 ------ lw 0 3 pos1 @@@@@@@ return 1 is this is true
 ------ lw 5 1 1 @@@@@@@@@@@@@end of isNeg(a), restore original variables
------- lw 0 6 pos2
+------ lw 5 2 2
+------ lw 0 6 pos3
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from isNeg(a) ////
@@ -140,19 +187,19 @@ nCr     sw 5 6 0       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@nCr(n,r)i want to make sur
 ------ lw 0 4 sltAdr      //check if n<r
 ------ jalr 4 7
 ------ sw 5 3 1            ///save result from slt(n<r) to stack
------- sw 0 2 6
------- lw 0 2 0
+------ add 0 2 6
+------ add 0 0 2
 ------ lw 0 4 sltAdr    //check if n<0
 ------ jalr 4 7
------- lw 0 1 3        // "(n<0)" or (n<r)
+------ add 0 3 1        // "(n<0)" or (n<r)
 ------ lw 5 2 1        //  (n<0) or "(n<r)"  
 ------ jalr or
 ------ sw 5 3 1      //store result from [(n<0) or (n<r)]
 ------ lw 5 1 3      // put r to $1
------- lw 0 2 0
+------ add 0 0 2
 ------ lw 0 4 sltAdr 
 ------ jalr 4 7
------- lw 0 2 3        //    [(n<0) or (n<r)] or "(r<0)"
+------ add 0 3 2        //    [(n<0) or (n<r)] or "(r<0)"
 ------ lw 5 1 1        //   "[(n<0) or (n<r)]" or (r<0)  
 ------ jalr or
 ------ lw 0 6 pos1
@@ -171,7 +218,6 @@ nCr     sw 5 6 0       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@nCr(n,r)i want to make sur
 ------ lw 5 7 4     @@@@@@@@@@@@@@@@@@@@ restore return address
 ------ lw 0 6 pos5
 ------ add 5 6 5
------- lw 5 6 0
 ------ lw 0 6 neg1    @@@@@@@@@@@@@@@@@@@@   recursive part 2
 ------ add 1 6 1
 ------ add 2 6 2
@@ -187,7 +233,7 @@ nCr     sw 5 6 0       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@nCr(n,r)i want to make sur
 ------ add 3 4 3      @@@@@@nCr(n-1,r)+nCr(n-1,r-1)
 ------ jalr 7 4     ////return
 nCris1 add 0 6 pos1
------- lw 0 3 6   /// result is 1
+------ add 0 6 3   /// result is 1
 ------ lw 5 1 2
 ------ lw 5 2 3
 ------ lw 5 7 4
@@ -227,11 +273,14 @@ subAdr .fill sub
 orAdr .fill or
 andAdr .fill and
 isNegA .fill isNeg
+negAdr .fill neg
 sltAdr .fill slt
+sgeAdr .fill sge
 ------ noop @@@@@@@@@@@@@@@@ these lines are associate for mult
 mulAdr .fill mult
 get0Ad .fill get0
 getbAd .fill getb
+BPLUSB .fill bplusb
 BTIMEA .fill btimea
 MULRCR .fill mulrcr
 ------ noop @@@@@@@@@@@@@@@@

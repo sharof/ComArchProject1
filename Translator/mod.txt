@@ -1,0 +1,63 @@
+mod sw 5 6 0           @@@@@@@@@@@@@mod(a,b)
+------ lw 0 6 neg3
+------ add 5 6 5
+------ sw 5 2 2
+------ sw 5 1 1   
+------ beq 0 2 nCrErr
+------ beq 0 1 get0
+------ lw 0 1 2        // check if b is negative
+------ lw 0 4 isNegA
+------ jalr 4 7
+------ beq 0 3 15   //if b is not negative, go to loop part(skip 15 instructions)
+------ lw 5 1 2        //change b from negative to positive
+------ lw 0 4 negAdr
+------ jalr 4 7
+------ lw 0 2 3      load neg(b) to $2
+------ lw 5 1 1       restore a to $1
+------ lw 0 4 modAdr
+------ jalr 4 7        //return mod (a,neg(b))
+------ lw 5 1 1      //restore original a
+------ lw 5 2 2      //restore original b
+------ lw 0 6 pos3
+------ add 5 6 5  //move stack pointer up 3 items
+------ lw 5 6 0   //restore original $6
+------ add 0 3 3   
+------ jalr 7 4   //return
+------ lw 5 1 1      //restore original a
+------ lw 0 4 isNegA   // is a negative?
+------ jalr 4 7
+------ beq 3 0 9
+------ lw 0 4 negAdr
+------ jalr 4 7
+------ lw 0 1 3
+------ lw 0 4 sgeAdr
+------ jalr 4 7
+------ lw 5 1 1
+------ beq 3 0 dismod
+------ add 1 2 1
+------ beq 0 0 -9
+------ lw 0 4 sgeAdr   // test if a>=b
+------ jalr 4 7
+------ beq 3 0 dismod
+------ lw 0 4 subAdr
+------ jalr 4 7
+------ lw 0 1 3
+------ beq 0 0 -7
+dismod add 0 1 3
+------ lw 5 1 1 
+------ lw 5 2 2
+------ lw 0 6 pos3
+------ add 5 6 5
+------ sw 5 6 0 
+------ jalr 7 4
+
+
+
+
+
+
+
+
+
+
+skip

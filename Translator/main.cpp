@@ -84,8 +84,8 @@ int main(int argc, char *argv[])//the MAIN part
 {
 	int binarycode=0;
     ifstream file,tmpfile;
-    ofstream machinecode;
- 	string line,fakeline;	
+    ofstream machinecode,memfile;
+ 	string line,fakeline,fillline;	
  	
  	//serching for .fill things and remember them
  		tmpfile.open("assembly.txt");	
@@ -117,7 +117,7 @@ imm.push_back(fakepc);
 //push the address into those vectors too
 label.push_back(arr[2]);
 address.push_back(fakepc);
-imm.push_back(fakepc);
+imm.push_back(0);
 //
 found=true;
 break;
@@ -138,9 +138,24 @@ fakepc++;
  	pc++;
  }
  	tmpfile.close();
- 	
+ 	if(label.size()!=0){cout<<"Things to fill memory manually (Format is: <pc> <immediate>))"<<endl;
+	 cout<<"-----------------------------------------------------------------------"<<endl;	 }
+ 	for (int i=0;i<label.size();i++)
+ 	{
+ 		line=NumberToString(address.at(i))+" "+NumberToString(imm.at(i)); 
+ 		cout<<line<<endl;
+ 		fillline+=line;
+		 fillline+="\n";
+	 }
+ 		memfile.open("memfile.txt");//finally, time to write the machine code.
+		memfile<<fillline;
+		memfile.close();
+ 		if(label.size()!=0){
+		 cout<<"-----------------------------------------------------------------------"<<endl;
+		 }
  	pc=0;
  	//time to start program
+ 	cout<<"Things to write in machine code..........."<<endl;
 	file.open("assembly.txt");	
 	while(getline(file,line)){
 binarycode=0;
@@ -249,33 +264,24 @@ binarycode=0;
 	 binarycode+=7<<22;
 	 }
   else if( arr[1]==".fill"  ){
-  	  if (atoi(arr[2].c_str())== 0 && arr[2] != "0") 		
-   		{
-  	for(int i=0;i<label.size();i++)
-  	{
-  		if(label.at(i)==arr[2])
-  		{
-  		binarycode+=address.at(i);	
-  			break;
-		  }		
-	  }
-  }
-  	else{
-  	binarycode+=atoi(arr[2].c_str());
-  }
+ 
   }
   else{
   cout<<"Assemble failed, unknown instruction at line "<<pc<<endl;
   exit(1);}
+if( arr[1]!=".fill"  )
+{
 cout<<binarycode<<endl;
 towrite+=NumberToString(binarycode);//write down each machine code
 towrite+="\n";//end of the line
+}
 pc++;//next instruction
 }
 		file.close();
 		machinecode.open("machinecode.txt");//finally, time to write the machine code.
 		machinecode<<towrite;
 		machinecode.close();
+cout<<"-----------------------------------------"<<endl;	
 cout<<"Assemble successful!"<<endl;
 return 0;	
 }
