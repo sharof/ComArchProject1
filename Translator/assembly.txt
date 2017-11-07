@@ -1,4 +1,12 @@
------- lw 0 5 immmax ///////intialize the stack pointer
+------ lw 0 4 immmax
+------ lw 0 5 immmax
+------ lw 0 6 pos1
+------ add 4 6 4
+------ add 5 4 5
+------ lw 0 1 pos9
+------ lw 0 2 pos10
+------ lw 0 4 nCrAdr
+------ jalr 4 7
 ------ halt
 sub    sw 5 6 0           @@@@@@@@@@@@@sub(a,b)
 ------ lw 0 6 neg3
@@ -28,8 +36,9 @@ neg    sw 5 6 0           @@@@@@@@@@@@@neg(a) AKA a times -1
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from neg(a,b) ////
 slt  sw 5 6 0           @@@@@@@@@@@@@slt(a,b)
------- lw 0 6 neg3
+------ lw 0 6 neg4
 ------ add 5 6 5
+------ sw 5 7 3
 ------ sw 5 2 2
 ------ sw 5 1 1   
 ------ lw 0 4 subAdr   @@@@@@@@@@@@@procedure
@@ -40,20 +49,24 @@ slt  sw 5 6 0           @@@@@@@@@@@@@slt(a,b)
 ------ add 0 3 3       @@@@@@ return isNeg(a-b)
 ------ lw 5 1 1    @@@@@@@@@@@@@end of slt(a,b), restore original variables
 ------ lw 5 2 2
------- lw 0 6 pos3
+------ lw 5 7 3
+------ lw 0 6 pos4
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from slt(a,b) ////
 sge  sw 5 6 0           @@@@@@@@@@@@@sge(a,b) test if a>=b
------- lw 0 6 neg3
+------ lw 0 6 neg4
 ------ add 5 6 5
+------ sw 5 7 3
 ------ sw 5 2 2
 ------ sw 5 1 1   
 ------ lw 0 4 subAdr   @@@@@@@@@@@@@procedure
 ------ jalr 4 7
+------ lw 5 7 3
 ------ add 0 3 1
 ------ lw 0 4 isNegA                   call isNeg(a-b)
 ------ jalr 4 7
+------ lw 5 7 3
 ------ beq 3 0 2   if a-b is not negative, this mean a>=b,so return 1 (skip 2 instructions)
 ------ add 0 0 3       if a-b is negative, return 0       
 ------ beq 0 0 2      skip 2 instructions to end the function
@@ -61,7 +74,8 @@ sge  sw 5 6 0           @@@@@@@@@@@@@sge(a,b) test if a>=b
 ------ add 0 6 3
 ------ lw 5 1 1    @@@@@@@@@@@@@end of sge(a,b), restore original variables
 ------ lw 5 2 2
------- lw 0 6 pos3
+------ lw 5 7 3
+------ lw 0 6 pos4
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from sge(a,b) ////
@@ -111,15 +125,17 @@ bplusb add 2 2 3                @@@@@@ if a==2, return b+b
 ------ jalr 7 4           @@@@return
 btimea lw 5 1 1  @@@@@@ to optimize the multiplication a should be less than b
 ------ lw 5 2 2             @@@@@@ popping 4 items from stacks
------- lw 5 7 3
------- lw 0 6 pos4
------- add 5 6 5
 ------ lw 5 6 0
 ------ add 0 1 4      //move a to $4
 ------ add 0 2 1       //write b in to $1
 ------ add 0 4 2          // move a from $4 to $2
 ------ lw 0 4 mulAdr 
------- jalr 4 7               //call the function again
+------ jalr 4 7               //call the function again\\
+------ lw 5 1 1
+------ lw 5 2 2
+------ lw 5 7 3
+------ lw 0 6 pos4
+------ add 5 6 5
 ------ jalr 7 4                  @@@@return
 mulrcr lw 0 6 neg1       
 ------ add 1 6 1            @@@@@decrease a by 1
@@ -161,21 +177,39 @@ and    sw 5 6 0  @@@@@@@@@@@@@ and(a,b) ////
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from and(a,b) ////
 isNeg    sw 5 6 0         @@@@@@@@@@@@@isNeg(a)   
------- lw 0 6 neg3
+------ lw 0 6 neg4
 ------ add 5 6 5
+------ sw 5 7 3
 ------ sw 5 2 2
 ------ sw 5 1 1
 ------ lw 0 2 immmin     @@@@@@@@@@@@@@@@procedure
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
+------ add 2 2 2
 ------ lw 0 4 andAdr
 ------ jalr 4 7          ///// $1 AND with -32768
------- add 0 3 6 
------- beq 2 6 2 @@@@@@@if is less than zero,negative sign bit must be 1
+------ lw 5 7 3
+------ beq 2 3 2 @@@@@@@if is less than zero,negative sign bit must be 1
 ------ add 0 0 3 @@@@@@@ return 0 is this is false
------- beq 1 1 1
+------ beq 0 0 1
 ------ lw 0 3 pos1 @@@@@@@ return 1 is this is true
 ------ lw 5 1 1 @@@@@@@@@@@@@end of isNeg(a), restore original variables
 ------ lw 5 2 2
------- lw 0 6 pos3
+------ lw 5 7 3
+------ lw 0 6 pos4
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4 @@@@@@@@@@@@@return from isNeg(a) ////
@@ -188,23 +222,29 @@ nCr     sw 5 6 0       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@nCr(n,r)i want to make sur
 ------ lw 0 4 sltAdr      //check if n<r
 ------ jalr 4 7
 ------ sw 5 3 1            ///save result from slt(n<r) to stack
------- add 0 2 6
+------ lw 5 7 4
 ------ add 0 0 2
 ------ lw 0 4 sltAdr    //check if n<0
 ------ jalr 4 7
+------ lw 5 7 4
 ------ add 0 3 1        // "(n<0)" or (n<r)
 ------ lw 5 2 1        //  (n<0) or "(n<r)"  
------- jalr or
+------ lw 0 4 orAdr
+------ jalr 4 7
+------ lw 5 7 4
 ------ sw 5 3 1      //store result from [(n<0) or (n<r)]
 ------ lw 5 1 3      // put r to $1
 ------ add 0 0 2
 ------ lw 0 4 sltAdr 
 ------ jalr 4 7
+------ lw 5 7 4
 ------ add 0 3 2        //    [(n<0) or (n<r)] or "(r<0)"
 ------ lw 5 1 1        //   "[(n<0) or (n<r)]" or (r<0)  
------- jalr or
+------ lw 0 4 orAdr
+------ jalr 4 7
+------ lw 5 7 4
 ------ lw 0 6 pos1
------- beq 3 6 ncrErr              //if the test case fails, error occured
+------ beq 3 6 nCrErr              //if the test case fails, error occured
 ------ lw 5 1 2  @@@@@@@@@@@@@@@@@@@@ restore n
 ------ lw 5 2 3 @@@@@@@@@@@@@@@@@@@@ restore r
 ------ beq 2 0 nCris1 @@@@@@@@@@@@@@ test if r==0 
@@ -213,28 +253,26 @@ nCr     sw 5 6 0       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@nCr(n,r)i want to make sur
 ------ add 1 6 1
 ------ lw 0 4 nCrAdr 
 ------ jalr 4 7
------- sw 5 3 1    //save the first part to the stack first
 ------ lw 5 1 2     @@@@@@@@@@@@@@@@@@@@ restore n
 ------ lw 5 2 3     @@@@@@@@@@@@@@@@@@@@ restore r
 ------ lw 5 7 4     @@@@@@@@@@@@@@@@@@@@ restore return address
------- lw 0 6 pos5
------- add 5 6 5
+------ sw 5 3 1    //save the first part to the stack first
+------ lw 5 6 5
 ------ lw 0 6 neg1    @@@@@@@@@@@@@@@@@@@@   recursive part 2
 ------ add 1 6 1
 ------ add 2 6 2
 ------ lw 0 4 nCrAdr 
 ------ jalr 4 7
------- lw 5 4 1     @@@@@@@@@@@@@@@@@@@@ restore the first part
+------ lw 5 6 1     @@@@@@@@@@@@@@@@@@@@ restore the first part
+------ add 3 6 3      @@@@@@nCr(n-1,r)+nCr(n-1,r-1)
 ------ lw 5 1 2     @@@@@@@@@@@@@@@@@@@@ restore n
 ------ lw 5 2 3     @@@@@@@@@@@@@@@@@@@@ restore r
 ------ lw 5 7 4     @@@@@@@@@@@@@@@@@@@@ restore return address
 ------ lw 0 6 pos5
 ------ add 5 6 5
 ------ lw 5 6 0
------- add 3 4 3      @@@@@@nCr(n-1,r)+nCr(n-1,r-1)
 ------ jalr 7 4     ////return
-nCris1 add 0 6 pos1
------- add 0 6 3   /// result is 1
+nCris1 lw 0 3 pos1
 ------ lw 5 1 2
 ------ lw 5 2 3
 ------ lw 5 7 4
@@ -245,10 +283,109 @@ nCris1 add 0 6 pos1
 nCrErr lw 5 1 2
 ------ lw 5 2 3
 ------ lw 5 7 4
+------ lw 0 3 neg1
 ------ lw 0 6 pos5
 ------ add 5 6 5
 ------ lw 5 6 0
+------ jalr 7 4
 ------ halt              ////ERROR @@@@@@@@@@@@@@@@@@@@ END of nCr(n,r) ////
+mod sw 5 6 0           @@@@@@@@@@@@@mod(a,b)
+------ lw 0 6 neg4
+------ add 5 6 5
+------ sw 5 7 3
+------ sw 5 2 2
+------ sw 5 1 1   
+------ beq 0 2 nCrErr
+------ beq 0 1 get0
+------ add 0 2 1       // check if b is negative
+------ lw 0 4 isNegA
+------ jalr 4 7
+------ lw 5 7 3
+------ beq 0 3 15   //if b is not negative, go to loop part(skip 16 instructions)
+------ lw 5 1 2        //change b from negative to positive
+------ lw 0 4 negAdr
+------ jalr 4 7
+------ lw 5 7 3
+------ add 0 3 2      load neg(b) to $2
+------ lw 5 1 1       restore a to $1
+------ lw 0 4 modAdr
+------ jalr 4 7        //return mod (a,neg(b))
+------ lw 5 1 1      //restore original a
+------ lw 5 2 2      //restore original b
+------ lw 5 7 3
+------ lw 0 6 pos4
+------ add 5 6 5  //move stack pointer up 4 items
+------ lw 5 6 0   //restore original $6 
+------ jalr 7 4   //return
+------ lw 5 7 3        //loop part
+------ lw 5 1 1      //restore original a
+------ lw 5 2 2      //restore original b
+------ lw 0 4 isNegA   // is a negative?
+------ jalr 4 7
+------ lw 5 7 3
+------ lw 5 2 2
+------ beq 3 0 12          //  if a isn't negative,
+------ add 0 1 6
+------ lw 0 4 negAdr
+------ jalr 4 7
+------ lw 5 7 3
+------ add 0 3 1
+------ lw 0 4 sgeAdr
+------ jalr 4 7
+------ lw 5 7 3
+------ beq 0 3 negmod        if neg(a)<b, go to the result.
+------ add 0 6 1
+------ add 1 2 1
+------ beq 0 0 -12
+------ lw 0 4 sgeAdr   // test if a>=b
+------ jalr 4 7
+------ lw 5 7 3
+------ beq 3 0 dismod     // if a<b, exit the loop
+------ lw 0 4 subAdr
+------ jalr 4 7
+------ lw 5 7 3
+------ add 0 3 1
+------ beq 0 0 -9
+negmod lw 0 4 negAdr
+------ jalr 4 7
+------ beq 0 0 1
+dismod add 0 1 3
+------ lw 5 1 1 
+------ lw 5 2 2
+------ lw 5 7 3
+------ lw 0 6 pos4
+------ add 5 6 5
+------ sw 5 6 0 
+------ jalr 7 4
+gcd sw 5 6 0
+------ lw 0 6 neg4
+------ add 5 6 5
+------ sw 5 7 3     ///save return address
+------ sw 5 2 2      ///save r address
+------ sw 5 1 1      ///save n address
+------ lw 0 4 modAdr
+------ jalr 4 7
+------ lw 5 7 3
+------ beq 0 3 gcdrtn
+------ add 0 2 1
+------ add 0 3 2
+------ lw 0 4 gcdAdr
+------ jalr 4 7
+------ lw 5 1 1
+------ lw 5 2 2
+------ lw 5 7 3
+------ lw 0 6 pos4
+------ add 5 6 5
+------ lw 5 6 0
+------ jalr 7 4 
+gcdrtn add 0 2 3  ////return n
+------ sw 5 1 1
+------ sw 5 2 2
+------ sw 5 7 3
+------ lw 0 6 pos4
+------ add 5 6 5
+------ lw 5 6 0
+------ jalr 7 4 
 ------ noop @@@@@@@@@@@@@@@@some constants
 pos1 .fill 1
 pos2 .fill 2
@@ -277,6 +414,15 @@ isNegA .fill isNeg
 negAdr .fill neg
 sltAdr .fill slt
 sgeAdr .fill sge
+------ noop @@@@@@@@@@@@@@@@ these lines are associate for mod
+modAdr .fill mod
+DISMOD .fill dismod
+NEGMOD .fill negmod
+------ noop @@@@@@@@@@@@@@@@
+------ noop @@@@@@@@@@@@@@@@ these lines are associate for gcd
+gcdAdr .fill gcd
+GCDRTN .fill gcdrtn
+------ noop @@@@@@@@@@@@@@@@
 ------ noop @@@@@@@@@@@@@@@@ these lines are associate for mult
 mulAdr .fill mult
 get0Ad .fill get0
@@ -290,5 +436,7 @@ ncrErr .fill nCrErr
 nCrIS1 .fill nCris1
 nCrAdr .fill nCr
 ------ noop  @@@@@@@@@@@@@@@@@
+a .fill 12384
+b .fill 22869
 immmax .fill 32767
 immmin .fill -32768
