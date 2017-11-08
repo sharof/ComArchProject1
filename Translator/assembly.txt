@@ -479,7 +479,7 @@ ncrErr .fill nCrErr
 nCrIS1 .fill nCris1
 nCrAdr .fill nCr
 ------ noop  @@@@@@@@@@@@@@@@@
-a .fill 84
+a .fill 96
 b .fill -454
 immmax .fill 32767
 immmin .fill -32768
