@@ -37,13 +37,6 @@ void Jcondcheck(){
   		cout<<"Assemble failed, register number can be only between 0-7 at line "<<pc<<endl; 
  		 exit(1);
    		}
-   		
-   		
-   		
-   		
-   		
-   		
-
 }
 int Icondcheck(){
 		if(!(atoi(arr[2].c_str())>=0&&atoi(arr[2].c_str())<=7&& atoi(arr[3].c_str())>=0&&atoi(arr[3].c_str())<=7))

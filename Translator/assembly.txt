@@ -3,9 +3,9 @@
 ------ lw 0 6 pos1
 ------ add 4 6 4
 ------ add 5 4 5
------- lw 0 1 pos9
------- lw 0 2 pos10
------- lw 0 4 nCrAdr
+------ lw 0 1 a
+------ lw 0 2 pos3
+------ lw 0 4 phiAdr
 ------ jalr 4 7
 ------ halt
 sub    sw 5 6 0           @@@@@@@@@@@@@sub(a,b)
@@ -13,7 +13,7 @@ sub    sw 5 6 0           @@@@@@@@@@@@@sub(a,b)
 ------ add 5 6 5
 ------ sw 5 2 2
 ------ sw 5 1 1
-------	nand	2 2 2   @@@@@@@@@@@@@procedure
+------	nand 2 2 2   @@@@@@@@@@@@@procedure
 ------ lw 0 6 pos1
 ------ add 2 6 2
 ------ add 1 2 3 
@@ -386,6 +386,45 @@ gcdrtn add 0 2 3  ////return n
 ------ add 5 6 5
 ------ lw 5 6 0
 ------ jalr 7 4 
+phi sw 5 6 0
+------ lw 0 6 neg5
+------ add 5 6 5
+------ sw 5 7 4     ///save return address
+------ sw 5 2 3      ///save r address
+------ sw 5 1 2      ///save n address
+------ lw 0 2 pos2
+------ lw 0 6 pos1
+------ sw 5 6 1
+phiing add 0 2 1
+------ lw 5 2 2
+------ lw 0 4 sltAdr
+------ jalr 4 7
+------ lw 5 7 4
+------ beq 3 0 phiend
+------ lw 0 4 gcdAdr
+------ jalr 4 7
+------ lw 0 6 neg1
+------ lw 5 7 4
+------ add 3 6 3
+------ beq 3 0 npp
+------ lw 0 6 pos1
+------ add 1 6 2
+------ lw 5 1 2
+------ beq 0 0 phiing
+npp lw 0 6 pos1
+------ lw 5 2 1
+------ add 2 6 2
+------ sw 5 2 1
+------ lw 5 2 2
+------ beq 0 0 -10
+phiend lw 5 3 1
+------ lw 5 1 2      ///save n address
+------ lw 5 2 3      ///save r address
+------ lw 5 7 4     ///save return address
+------ lw 0 6 pos5
+------ add 5 6 5
+------ lw 5 6 0
+------ jalr 7 4
 ------ noop @@@@@@@@@@@@@@@@some constants
 pos1 .fill 1
 pos2 .fill 2
@@ -414,6 +453,10 @@ isNegA .fill isNeg
 negAdr .fill neg
 sltAdr .fill slt
 sgeAdr .fill sge
+PHIEND .fill phiend
+PHIING .fill phiing
+phiAdr .fill phi
+NPP .fill npp
 ------ noop @@@@@@@@@@@@@@@@ these lines are associate for mod
 modAdr .fill mod
 DISMOD .fill dismod
@@ -436,7 +479,7 @@ ncrErr .fill nCrErr
 nCrIS1 .fill nCris1
 nCrAdr .fill nCr
 ------ noop  @@@@@@@@@@@@@@@@@
-a .fill 12384
-b .fill 22869
+a .fill 84
+b .fill -454
 immmax .fill 32767
 immmin .fill -32768
